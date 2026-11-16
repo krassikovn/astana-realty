@@ -16,7 +16,7 @@ export function BudgetPill({ sum, budget }) {
 
 // Подписи отдаются функциями: перевод берётся в момент отрисовки
 const KIND = () => ({ base: t('сбалансированный набор'), cheap: t('самые дешёвые квартиры'), roomy: t('первая квартира побольше') })
-const PARTS = W => [['ready', t('Срок сдачи жилья')], ['loc', t('Локация')], ['quality', t('Качество квартир')], ['yld', t('Доходность аренды')], ['cls', t('Класс жилья')], ['together', t('Всё рядом')], ['disc', t('Запас к вторичке')], ['budget', t('Бюджет')]].map(([k, l]) => [k, l, W[k]]).filter(x => x[2] > 0.5).sort((a, b) => b[2] - a[2])
+const PARTS = W => [['ready', t('Срок сдачи жилья')], ['loc', t('Локация')], ['ppm', t('Цена за метр')], ['quality', t('Качество квартир')], ['yld', t('Доходность аренды')], ['cls', t('Класс жилья')], ['together', t('Всё рядом')], ['disc', t('Запас к вторичке')], ['budget', t('Бюджет')]].map(([k, l]) => [k, l, W[k]]).filter(x => x[2] > 0.5).sort((a, b) => b[2] - a[2])
 const TOGETHER = () => ({ project: t('один ЖК'), bigville: t('один бигвилль'), near: t('рядом, до 1,5 км'), far: t('разные районы') })
 const h1 = v => v == null ? '—' : String(v).replace('.', ',') + '\u00a0' + t('м')
 const clsList = c => [...new Set(c.picks.map(x => t(x.p.cls)))].join(', ')
@@ -69,7 +69,7 @@ function PickRow({ x, role, est }) {
           {a.studio && a.r > 1 && <span>{t('евро-планировка')}</span>}
         </div>
       </div>
-      <div className="aptrow-p num"><Money v={x.price} precise />{est && <small className="rentest" title={est.tag === 'own' ? t('по объявлениям в самом ЖК') : est.tag === 'near' ? t('по объявлениям в 800 м') : t('по средней ставке района')}>{t('аренда ~')}<Money v={est.v} suffix={t('/мес')} /></small>}</div>
+      <div className="aptrow-p num"><Money v={x.price} precise /><small className="ppm"><Money v={x.price / a.s} suffix={t('/м²')} /></small>{est && <small className="rentest" title={est.tag === 'own' ? t('по объявлениям в самом ЖК') : est.tag === 'near' ? t('по объявлениям в 800 м') : t('по средней ставке района')}>{t('аренда ~')}<Money v={est.v} suffix={t('/мес')} /></small>}</div>
     </div>
   )
 }
@@ -133,7 +133,7 @@ function Compare({ cards, units }) {
   const rentP = c => c.picks.filter((_, i) => units[i].role === 'rent'), hasRent = units.some(u => u.role === 'rent')
   const main = c => c.picks[0], km = v => fmtN(v, 1) + '\u00a0' + t('км')
   const rows = [
-    [t('Общая сумма'), c => <Money v={c.m.total} />], [t('К бюджету'), c => (c.m.over > 0 ? '+' : '') + fmtN(c.m.over, 0) + pctSign()], [t('Общая площадь, м²'), c => fmtN(c.m.area, 0)],
+    [t('Общая сумма'), c => <Money v={c.m.total} />], [t('К бюджету'), c => (c.m.over > 0 ? '+' : '') + fmtN(c.m.over, 0) + pctSign()], [t('Цена за м², средняя'), c => c.m.priceM2 == null ? '—' : <Money v={c.m.priceM2} suffix={t('/м²')} />], [t('Общая площадь, м²'), c => fmtN(c.m.area, 0)],
     [t('Класс'), clsList], [t('Вместе'), c => TOGETHER()[c.m.together]],
     [t('Жильё: срок'), c => dlMonth(main(c).a.dl)], [t('Жильё: площадь и этаж'), c => `${fmtN(main(c).a.s, 1)}\u00a0${t('м²')}, ${t('этаж {f} из {fm}', { f: main(c).a.f, fm: main(c).a.fm })}`], [t('Жильё: потолок'), c => h1(ceilOf(main(c).a, main(c).p))],
     [t('Жильё: планировка'), c => main(c).a.lt ? t(main(c).a.lt).toLowerCase() : '—'], [t('Жильё: отделка'), c => main(c).a.rep ? t('с ремонтом') : c.m.traits.finish ? finishLabel(c.m.traits.finish).toLowerCase() : t('без ремонта')], [t('Окна в ЖК'), c => c.m.traits.winTxt ? t('высота {h}', { h: dataUnits(c.m.traits.winTxt).toLowerCase() }) : c.m.traits.pano ? t('панорамные') : '—'],
@@ -169,7 +169,7 @@ export default function Overview() {
   const use = c => { st.set({ slots: [0, 1, 2].map(i => c.picks[i] ? { slug: c.picks[i].p.slug, id: c.picks[i].a.id } : null) }); nav('/builder') }
   const favs = st.favs.map(k => { const [slug, id] = k.split('|'); const p = bySlug[slug]; const a = p?.all.find(x => x.id === id); return a ? { p, a } : null }).filter(Boolean)
   const best = cards[0], rest = cards.slice(1)
-  const list = useMemo(() => { const l = [...(ov.allVariants ? combos : tops)]; const f = { score: c => -c.m.score, total: c => c.m.total, yld: c => -(c.m.yld ?? -1), roi: c => -(c.m.roi10 ?? -1), loc: c => -c.m.locS, disc: c => -(c.m.disc ?? -99), q: c => -c.m.quality }[ov.sort] || (c => -c.m.score); return l.sort((a, b) => f(a) - f(b)) }, [combos, tops, ov.sort, ov.allVariants])
+  const list = useMemo(() => { const l = [...(ov.allVariants ? combos : tops)]; const f = { score: c => -c.m.score, total: c => c.m.total, ppm: c => c.m.priceM2 ?? 9e9, yld: c => -(c.m.yld ?? -1), roi: c => -(c.m.roi10 ?? -1), loc: c => -c.m.locS, disc: c => -(c.m.disc ?? -99), q: c => -c.m.quality }[ov.sort] || (c => -c.m.score); return l.sort((a, b) => f(a) - f(b)) }, [combos, tops, ov.sort, ov.allVariants])
   const idx = priceindex?.[0]?.['Есильский р-н'] || []
   const cagr = n => idx.length > n * 12 ? (Math.pow(idx[idx.length - 1][1] / idx[idx.length - 1 - n * 12][1], 1 / n) - 1) * 100 : null
   const dirty = JSON.stringify({ ...ov, sort: 0, allVariants: 0 }) !== JSON.stringify({ ...OV_DEFAULT, sort: 0, allVariants: 0 })
@@ -239,14 +239,14 @@ export default function Overview() {
           right={<div className="filters" style={{ margin: 0 }}>
             <button className="chip" aria-pressed={ov.allVariants} onClick={() => setOv(o => ({ ...o, allVariants: !o.allVariants }))}>{t('все варианты набора')}</button>
             <select aria-label={t('Сортировка')} value={ov.sort} onChange={e => setOv(o => ({ ...o, sort: e.target.value }))}>
-              <option value="score">{t('по оценке')}</option><option value="total">{t('сначала дешёвые')}</option><option value="yld">{t('по доходности аренды')}</option><option value="roi">{t('по итогу за 10 лет')}</option><option value="loc">{t('по локации')}</option><option value="q">{t('по качеству квартир')}</option><option value="disc">{t('по запасу к вторичке')}</option>
+              <option value="score">{t('по оценке')}</option><option value="total">{t('сначала дешёвые')}</option><option value="ppm">{t('дешевле за метр')}</option><option value="yld">{t('по доходности аренды')}</option><option value="roi">{t('по итогу за 10 лет')}</option><option value="loc">{t('по локации')}</option><option value="q">{t('по качеству квартир')}</option><option value="disc">{t('по запасу к вторичке')}</option>
             </select></div>}>
           <div className="tw pin" style={{ maxHeight: 640 }}><table className="alltab">
-            <thead><tr><th>{t('Связка')}</th><th className="r">{t('Оценка')}</th><th className="r">{t('Сумма')}</th><th className="r">{t('К бюджету')}</th><th>{t('Жильё')}</th><th className="r">{t('Потолок')}</th><th className="r">{t('Аренда в месяц')}</th><th className="r">{t('Доходность')}</th><th className="r">{t('Итог 10 лет')}</th><th className="r">{t('К вторичке')}</th><th className="r">LRT<small>{t('км')}</small></th><th className="r">{t('Локация')}</th></tr></thead>
+            <thead><tr><th>{t('Связка')}</th><th className="r">{t('Оценка')}</th><th className="r">{t('Сумма')}</th><th className="r">{t('Цена/м²')}</th><th className="r">{t('К бюджету')}</th><th>{t('Жильё')}</th><th className="r">{t('Потолок')}</th><th className="r">{t('Аренда в месяц')}</th><th className="r">{t('Доходность')}</th><th className="r">{t('Итог 10 лет')}</th><th className="r">{t('К вторичке')}</th><th className="r">LRT<small>{t('км')}</small></th><th className="r">{t('Локация')}</th></tr></thead>
             <tbody>{list.map(c => <tr key={c.key} className="click" tabIndex={0} onClick={() => use(c)} onKeyDown={e => { if (e.key === 'Enter') use(c) }}>
               <td><b>{c.title}</b> <Link className="maplink" to={`/map?focus=${[...new Set(c.picks.map(x => x.p.slug))].join(',')}`} onClick={e => e.stopPropagation()}>{t('на карте')}</Link><span className="sub">{clsList(c)}{ov.allVariants ? ' · ' + KIND()[c.kind] : ''}{c.stretch ? ' · ' + t('с доплатой') : ''}</span></td>
               <td className="r num"><span className={`ybar ${c.m.score >= 70 ? 'hi' : c.m.score >= 55 ? 'mid' : ''}`}>{c.m.score}</span></td>
-              <td className="r num"><Money v={c.m.total} /></td><td className="r num">{(c.m.over > 0 ? '+' : '') + fmtN(c.m.over, 0) + pctSign()}</td>
+              <td className="r num"><Money v={c.m.total} /></td><td className="r num">{c.m.priceM2 == null ? '—' : <Money v={c.m.priceM2} />}</td><td className="r num">{(c.m.over > 0 ? '+' : '') + fmtN(c.m.over, 0) + pctSign()}</td>
               <td>{dlMonth(c.picks[0].a.dl)}<span className="sub">{fmtN(c.picks[0].a.s, 0)}{'\u00a0'}{t('м²')}{c.picks[0].a.lt ? ', ' + t(c.picks[0].a.lt).toLowerCase() : ''}{c.picks[0].a.rep ? ', ' + t('с ремонтом') : ''}</span></td>
               <td className="r num">{h1(c.m.ceilMin)}</td><td className="r num">{c.m.rentKnown && c.m.rentN ? <Money v={c.m.rentMonth} suffix={t('/мес')} /> : '—'}</td><td className="r num">{fmtPct(c.m.yld)}</td>
               <td className="r num">{c.m.roi10 == null ? '—' : '+' + fmtN(c.m.roi10, 0) + pctSign()}</td><td className="r num">{c.m.disc == null ? '—' : (c.m.disc >= 0 ? '−' : '+') + fmtN(Math.abs(c.m.disc), 0) + pctSign()}</td>
@@ -258,6 +258,7 @@ export default function Overview() {
           <div className="card method"><ul>
             <li>{t('Каждый набор получает баллы по восьми критериям. Вес критерия зависит от того, насколько он важен вам по анкете; сейчас веса такие: {l}.', { l: PARTS(S.W).map(([, l, w]) => `${l.toLowerCase()} ${fmtN(w, 0)}`).join(', ') })}</li>
             <li><b>{t('Срок сдачи жилья.')}</b> {t('Сданный дом даёт максимум; чем позже сдача, тем меньше баллов, через 14 месяцев и дальше — ноль.')}</li>
+            <li><b>{t('Цена за метр.')}</b> {t('Средняя цена квадратного метра по набору: чем ниже, тем больше баллов. Для многих это главный критерий — поднимите его важность в анкете.')}</li>
             <li><b>{t('Локация.')}</b> {t('Расстояние до LRT, парки и Ботанический сад, спорт и Барыс Арена, школы, сады, медицина и магазины рядом, ТРЦ, обжитость района по числу объявлений.')}</li>
             <li><b>{t('Качество квартир.')}</b> {t('Высота потолков, тип планировки, балкон, высота окон и остекление по описанию ЖК, этаж. Квартира для жизни весит вдвое больше квартиры под аренду.')}</li>
             <li><b>{t('Доходность аренды.')}</b> {t('Годовая аренда сдаваемых квартир к их цене с ремонтом и мебелью. Ставка берётся по объявлениям Крыши в самом ЖК, а если их меньше трёх, то в радиусе 800 м. Квартире с ремонтом от застройщика закладывается треть суммы на обустройство.')}</li>

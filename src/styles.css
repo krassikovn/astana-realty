@@ -662,3 +662,5 @@ td .mny-u,.aptrow-p .mny-u{font-size:.8em}
 .gate .logo{display:grid;place-items:center;width:44px;height:44px;border-radius:12px;background:var(--accent);color:#fff;font-weight:800;font-size:20px}
 .gate .q-input{max-width:none;width:100%;letter-spacing:.08em}
 .gate .btn.pri{min-height:46px;font-size:16px}.gate .btn[disabled]{opacity:.55;cursor:default}
+.aptrow-p .ppm{display:block;font-size:11.5px;font-weight:600;color:var(--accent-d);margin-top:1px}
+.aptrow-p .ppm .mny-u{font-size:.85em}

@@ -47,7 +47,7 @@ export default function Start() {
   const found = useMemo(() => { try { const S = buildScenarios(data, { ...st, ...cfg }, cfg.ov); return { n: S.tops.length, best: S.cards[0]?.c } } catch { return { n: 0 } } }, [data, cfg, st.mode, st.lang, st.cur])
 
   const CLS = [['any', 'star', t('Любой'), t('смотрим всё, от «Комфорт lite» до «Премиум»')], ['comfort', 'star', t('Комфорт и выше'), t('без самых простых домов')], ['comfortPlus', 'star', t('Комфорт+ и выше'), t('улучшенные дворы и холлы')], ['biz', 'gem', t('Бизнес и выше'), t('высокие потолки, закрытые дворы, меньше квартир на этаже')], ['prem', 'gem', t('Бизнес+ и Премиум'), t('только верхний сегмент')]]
-  const IMP = [['ready', 'clock', t('Быстрее заехать'), t('дом сдан или сдаётся скоро')], ['loc', 'pin', t('Обжитое место'), t('LRT, парки, школы, магазины рядом')], ['quality', 'ruler', t('Сами квартиры'), t('потолки, планировка, окна, балкон')], ['yld', 'chart', t('Доход от аренды'), t('сколько приносят сдаваемые квартиры')], ['cls', 'gem', t('Класс дома'), t('чем выше класс, тем лучше')], ['together', 'blocks', t('Всё в одном месте'), t('один ЖК или соседние дома')], ['budget', 'coins', t('Уложиться в бюджет'), t('без доплат сверх лимита')], ['disc', 'tag', t('Купить дешевле рынка'), t('цена BI ниже вторички рядом')]]
+  const IMP = [['ready', 'clock', t('Быстрее заехать'), t('дом сдан или сдаётся скоро')], ['ppm', 'ruler', t('Цена за метр'), t('меньше тенге за квадратный метр')], ['loc', 'pin', t('Обжитое место'), t('LRT, парки, школы, магазины рядом')], ['quality', 'ruler', t('Сами квартиры'), t('потолки, планировка, окна, балкон')], ['yld', 'chart', t('Доход от аренды'), t('сколько приносят сдаваемые квартиры')], ['cls', 'gem', t('Класс дома'), t('чем выше класс, тем лучше')], ['together', 'blocks', t('Всё в одном месте'), t('один ЖК или соседние дома')], ['budget', 'coins', t('Уложиться в бюджет'), t('без доплат сверх лимита')], ['disc', 'tag', t('Купить дешевле рынка'), t('цена BI ниже вторички рядом')]]
   const LV = [t('не важно'), t('обычно'), t('важно'), t('очень важно')]
 
   const steps = [
@@ -62,6 +62,12 @@ export default function Start() {
         <span className="q-unit-n">{i + 1}</span>
         <div className="seg">{[['live', t('Жить')], ['rent', t('Сдавать')]].map(([r, l]) => <button key={r} type="button" aria-pressed={u.role === r} onClick={() => setUnit(i, { role: r })}>{l}</button>)}</div>
         <div className="chips">{[1, 2, 3, 4].map(r => <button key={r} type="button" className="chip" aria-pressed={u.rooms === r} onClick={() => setUnit(i, { rooms: r })}>{roomsLabel(r)}</button>)}</div>
+      </div>)}</div>) },
+    { id: 'area', icon: 'ruler', q: t('Какая минимальная площадь?'), hint: t('Главное при покупке — метры. Задайте нижнюю границу по каждому типу квартир; меньше неё варианты не предлагаем.'), body: (
+      <div className="q-units">{[...new Set(a.units.map(u => u.rooms))].sort((x, y) => x - y).map(r => <div className="q-unit" key={r}>
+        <b className="q-unit-lbl">{roomsLabel(r)}</b>
+        <div className="chips">{[[0, t('любая')], [50, '50'], [60, '60'], [72, '72'], [80, '80'], [90, '90'], [110, '110']].map(([v, l]) => <button key={v} type="button" className="chip" aria-pressed={(a.smin[r] || 0) === v} onClick={() => set({ smin: { ...a.smin, [r]: v } })}>{l}{v ? ' ' + t('м²') : ''}</button>)}</div>
+        <span className="q-in sm"><input type="number" min="0" max="300" value={a.smin[r] || ''} placeholder={t('от, м²')} onChange={e => set({ smin: { ...a.smin, [r]: +e.target.value || 0 } })} /><em>{t('м²')}</em></span>
       </div>)}</div>) },
     { id: 'budget', icon: 'coins', q: t('Какой общий бюджет?'), hint: t('Двигайте ползунок. Сумма делится между квартирами по числу комнат, доли можно поправить вручную.'), body: (
       <div className="q-stack">

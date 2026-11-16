@@ -16,7 +16,8 @@ export const unitLabel = u => t(u.role === 'live' ? '{r} для жизни' : '{
 export const SLOT_NAMES = units => units.map((u, i) => unitLabel(u) + (units.filter(x => x.role === u.role && x.rooms === u.rooms).length > 1 ? ' №' + (units.slice(0, i + 1).filter(x => x.role === u.role && x.rooms === u.rooms).length) : ''))
 export const SLOT_SHORT = units => units.map(u => u.role === 'live' ? t('Жить') : t('Сдавать'))
 // Вес критериев в оценке (сумма 100) и важность, которую задаёт пользователь: 0 — не важно, 1 — обычно, 2 — важно, 3 — очень важно
-export const BASE_W = { ready: 20, loc: 22, quality: 15, yld: 13, cls: 13, together: 9, budget: 5, disc: 3 }
+export const BASE_W = { ready: 18, loc: 20, ppm: 14, quality: 14, yld: 12, cls: 12, together: 8, budget: 5, disc: 3 }
+const PPM_LO = 560000, PPM_HI = 950000 // ₸ за м²: ниже — лучше
 const IMP_MULT = [0, 1, 1.8, 2.8]
 export function weightsOf(ov) {
   const imp = ov?.imp || {}, raw = {}; let sum = 0
@@ -81,7 +82,7 @@ export const OV_DEFAULT = {
   allVariants: false,
 }
 export const mergeOv = ov => ({ ...OV_DEFAULT, ...(ov || {}), common: { ...OV_DEFAULT.common, ...(ov?.common || {}) }, assume: { ...OV_DEFAULT.assume, ...(ov?.assume || {}) }, slots: Array.from({ length: Math.max(3, ov?.units?.length || 0) }, (_, i) => ({ ...(ov?.slots?.[i] || {}) })) })
-export const slotCfg = (ov, st, i) => { const u = unitsOf(ov, st)[i] || { role: 'rent', rooms: 2, bud: st.b2 }; return { rooms: u.rooms, bud: u.bud, role: u.role, smin: 0, ...ov.common, ...(ov.per ? ov.slots[i] : {}) } }
+export const slotCfg = (ov, st, i) => { const u = unitsOf(ov, st)[i] || { role: 'rent', rooms: 2, bud: st.b2 }; return { rooms: u.rooms, bud: u.bud, role: u.role, smin: u.smin || 0, ...ov.common, ...(ov.per ? ov.slots[i] : {}) } }
 
 const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x))
 const NOW = Date.now(), MONTH = 30.44 * 864e5
@@ -175,12 +176,14 @@ function measure(picks, ctx) {
     disc: disc == null ? .33 : clamp((disc + 5) / 25),
     budget: clamp(1 - Math.max(0, over) / 10),
   }
+  const priceM2 = area ? total / area : null
+  frac.ppm = priceM2 == null ? .5 : clamp((PPM_HI - priceM2) / (PPM_HI - PPM_LO))
   const parts = {}; for (const k of Object.keys(frac)) parts[k] = frac[k] * W[k]
   // штрафы: крайние этажи, ненадёжная ставка аренды, необжитое окружение («степь»)
   parts.pen = -2 * edges - (rent.length && lowConf ? 3 : 0) - (locS < 25 ? 8 * (25 - locS) / 25 : 0)
   const score = Math.round(Object.values(parts).reduce((s, v) => s + v, 0))
   return {
-    total, area, budget, over, rentMonth, rentYear, rentKnown, ests, yld, payback: rentYear ? invRent / rentYear : null, rentStart: waits.length ? Math.max(...waits) : 0, rentStartLabel: waits.length ? monthLabel(Math.max(...waits)) : '', waits, estBy, rentN: rent.length, n: picks.length, locS, mainLabel: unitLabel(units[0]), W,
+    total, area, priceM2, m2byPick: picks.map(x => x.price / x.a.s), budget, over, rentMonth, rentYear, rentKnown, ests, yld, payback: rentYear ? invRent / rentYear : null, rentStart: waits.length ? Math.max(...waits) : 0, rentStartLabel: waits.length ? monthLabel(Math.max(...waits)) : '', waits, estBy, rentN: rent.length, n: picks.length, locS, mainLabel: unitLabel(units[0]), W,
     fitSum, quality, quals, ceilMin, traits: traitsOf(main.p), rent10, value10, roi10, annual: roi10 == null ? null : (Math.pow(1 + roi10 / 100, 0.1) - 1) * 100, invested, disc, loc, together, cls, ceil3, ready3, readyAll, edges, lowConf,
     biz: picks.every(x => x.p.biz), keysLabel: ready3 ? null : monthLabel(monthsTo(main.a.dl) + 3), moveIn: ready3 ? t('сразу после ремонта') : t('ключи {d}', { d: monthLabel(monthsTo(main.a.dl) + 3) }), parts, score,
   }
@@ -271,6 +274,7 @@ export function buildScenarios(data, st, ovRaw) {
   take('best', t('Лучший по сумме требований'), t('Максимум баллов по вашим приоритетам: срок сдачи, класс, один ЖК, локация, доходность и цена.'), inB, (a, b) => b.m.score - a.m.score)
   take('now', t('Всё сдано, аренда сразу'), t('Все квартиры в сданных домах: заезд и аренда без ожидания стройки.'), inB.filter(c => c.m.readyAll), (a, b) => b.m.score - a.m.score)
   take('cheap', t('Самый дешёвый'), t('Минимальная общая сумма при тех же фильтрах.'), inB, (a, b) => a.m.total - b.m.total)
+  take('ppm', t('Дешевле за метр'), t('Самая низкая средняя цена за квадратный метр — главное при покупке метров.'), inB.filter(c => c.m.priceM2 != null), (a, b) => a.m.priceM2 - b.m.priceM2)
   take('yield', t('Максимум от аренды'), t('Квартиры под аренду с лучшей доходностью; учитываются только ЖК, где ставка подтверждена объявлениями.'), inB.filter(c => c.m.yld != null && !c.m.lowConf), (a, b) => b.m.yld - a.m.yld)
   take('biz', t('Бизнес-класс в одном ЖК'), t('Все квартиры бизнес-класса и выше в одном комплексе.'), inB.filter(c => c.m.biz && c.m.together === 'project'), (a, b) => b.m.score - a.m.score)
   take('loc', t('Лучшая локация'), t('Максимальная оценка окружения: LRT, парки, спорт, школы, магазины.'), inB, (a, b) => b.m.locS - a.m.locS || b.m.score - a.m.score)

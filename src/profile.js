@@ -17,12 +17,13 @@ export const CLASS_FROM = { any: [], comfort: ['Комфорт', 'Комфорт
 export const ANSWERS_DEFAULT = {
   name: '', units: [{ role: 'live', rooms: 3 }, { role: 'rent', rooms: 2 }, { role: 'rent', rooms: 2 }], total: 165, buds: null, flex: 10,
   clsMode: 'all', cls: 'any', clsPer: [], ready: 'any', ceil: 3, extras: [], together: 'bigville', bank: 'left',
-  imp: { ready: 2, loc: 2, quality: 1, yld: 1, cls: 1, together: 1, budget: 1, disc: 1 }, near: ['lrt', 'green', 'sport'],
+  smin: {}, // минимальная площадь по числу комнат, например {2:72,3:80}
+  imp: { ready: 2, loc: 2, ppm: 2, quality: 1, yld: 1, cls: 1, together: 1, budget: 1, disc: 1 }, near: ['lrt', 'green', 'sport'],
 }
 // Ответы анкеты → настройки магазина (ov, бюджеты, берег)
 export function answersToStore(a) {
   const buds = a.buds && a.buds.length === a.units.length ? a.buds : splitBudget(a.units, a.total)
-  const units = a.units.map((u, i) => ({ ...u, bud: buds[i] }))
+  const units = a.units.map((u, i) => ({ ...u, bud: buds[i], smin: a.smin?.[u.rooms] || 0 }))
   // движок ставит квартиры для жизни первыми: сортируем здесь же, чтобы фильтры по квартирам совпали по номерам
   const order = units.map((u, i) => i).sort((x, y) => (units[x].role === 'live' ? 0 : 1) - (units[y].role === 'live' ? 0 : 1) || x - y)
   const sorted = order.map(i => units[i])
