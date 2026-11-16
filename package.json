@@ -1,0 +1,30 @@
+{
+  "name": "astana-realty",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "deploy": "sh scripts/deploy.sh",
+    "fetch": "node scripts/fetch.mjs",
+    "fetch:bi": "node scripts/fetch.mjs bi",
+    "fetch:krisha": "node scripts/fetch.mjs krisha",
+    "fetch:osm": "node scripts/fetch.mjs osm",
+    "fetch:rates": "node scripts/fetch.mjs rates",
+    "analyze": "node scripts/fetch.mjs analyze",
+    "update": "node scripts/fetch.mjs --force"
+  },
+  "dependencies": {
+    "maplibre-gl": "4.7.1",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "react-router-dom": "6.28.0",
+    "recharts": "2.13.3"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "4.3.4",
+    "vite": "5.4.11"
+  }
+}

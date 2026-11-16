@@ -1,0 +1,108 @@
+// Каталог, страница ЖК, подбор тройки, карта
+export default {
+  // ───── единицы и общие слова
+  'км': 'km', 'м': 'm', 'м²': 'm²', 'мин': 'min', 'ч': 'h', '/мес': '/měs.', '/м²': '/m²', '% в год': '% ročně',
+  'от': 'od', 'нет': 'není', 'до {n}': 'až {n}', 'Все': 'Vše', 'все': 'vše', 'Закрыть': 'Zavřít',
+  'бигвилль {n}': 'rezidenční čtvrť {n}', 'правый берег': 'pravý břeh', 'есть сданные дома': 'část budov zkolaudována',
+  'в лимите': 'v limitu', 'выше лимита': 'nad limit', 'проходит по лимитам': 'v rámci limitů',
+  'Потолки': 'Světlá výška', 'Потолок': 'Světlá výška', 'потолки {h}': 'světlá výška {h}', 'Этажность': 'Počet podlaží', 'Этаж': 'Podlaží',
+  '{f} из {fm}': '{f}. NP z {fm}', 'эт. {f}/{fm}': '{f}. NP z {fm}', 'этаж {f}': '{f}. NP', 'этажи {a}–{b}': '{a}.–{b}. NP',
+  'Площадь': 'Plocha', 'Площадь, м²': 'Plocha, m²', 'Сдача': 'Termín dokončení', 'Отделка': 'Provedení', 'ремонт': 'na klíč', 'с ремонтом': 'na klíč', 'предчистовая': 'shell & core',
+  'Что рядом': 'Okolí', 'Аренда рядом': 'Pronájem v okolí', 'ЖК': 'Projekt', 'Квартира': 'Byt', 'Цена': 'Cena',
+
+  // ───── каталог
+  'Каталог ЖК': 'Katalog projektů',
+  'Все проекты BI Group в Астане, где сейчас продаются квартиры. Цены «от» считаются по свободным квартирам, без броней.': 'Všechny projekty BI Group v Astaně, ve kterých se aktuálně prodávají byty. Ceny „od“ vycházejí z volných bytů, bez rezervovaných.',
+  'Поиск по названию или улице': 'Hledat podle názvu nebo ulice', 'Поиск': 'Hledat', 'Сортировка': 'Řazení',
+  'Бизнес и выше': 'Business třída a vyšší', 'Проходит по лимитам': 'V rámci limitů', 'Есть сданные дома': 'Se zkolaudovanými budovami', 'Потолки от 3 м': 'Světlá výška od 3 m',
+  'Под такие фильтры ничего не подходит. Снимите один из них.': 'Zadaným filtrům nic neodpovídá. Zkuste některý z nich vypnout.',
+  'сначала подходящие': 'nejdřív vyhovující', 'по цене трёшки': 'podle ceny třípokojového bytu', 'по цене двушки': 'podle ceny dvoupokojového bytu', 'по сроку сдачи': 'podle termínu dokončení',
+  'ближе к Ботсаду': 'nejblíž k Botanické zahradě', 'ближе к Барыс Арене': 'nejblíž k Barys Areně', 'ближе к LRT': 'nejblíž k LRT', 'по аренде двушки': 'podle nájemného dvoupokojového bytu',
+  'Свободно': 'Volné', 'Аренда 2-к': 'Nájemné 2 pok.', 'Ботсад': 'Bot. zahrada', 'скидка до {n}%': 'sleva až {n} %',
+
+  // ───── подбор тройки
+  'Подбор тройки': 'Výběr trojice bytů',
+  'Три конкретные квартиры с планировками. Выбор сохраняется в браузере. Заполнить можно со страницы ЖК кнопкой «в подбор» или из готовых связок на обзоре.': 'Tři konkrétní byty včetně půdorysů. Výběr se ukládá v prohlížeči. Byty lze přidat na stránce projektu tlačítkem „do výběru“ nebo převzít z hotových sestav v přehledu.',
+  'Очистить': 'Vymazat', 'Квартира {i} из 3': 'Byt {i} ze 3',
+  'Трёшка, в которой жить': 'Třípokojový byt k vlastnímu bydlení', 'Двушка под аренду, первая': 'První dvoupokojový byt k pronájmu', 'Двушка под аренду, вторая': 'Druhý dvoupokojový byt k pronájmu',
+  'Выберите ЖК': 'Vyberte projekt', 'Квартира продана или в брони': 'Byt je prodaný nebo rezervovaný',
+  'Цена за м²': 'Cena za m²', 'Кухня': 'Kuchyně', 'Тип': 'Typ dispozice', 'Страница {name}': 'Stránka projektu {name}',
+  'Выберите ЖК и квартиру или нажмите «в подбор» на странице ЖК.': 'Vyberte projekt a byt, nebo na stránce projektu klikněte na „do výběru“.',
+  'Одна и та же двушка выбрана дважды.': 'Stejný dvoupokojový byt je vybrán dvakrát.',
+  'Дома рядом: между самыми дальними {d} км.': 'Budovy jsou blízko sebe: nejvzdálenější dělí {d} km.',
+  'Дома в разных районах: между самыми дальними {d} км.': 'Budovy leží v různých částech města: nejvzdálenější dělí {d} km.',
+  'Трёшка сдаётся {d}: в начале 2027 года в неё не заехать.': 'Termín dokončení třípokojového bytu je {d}: začátkem roku 2027 ještě nebude k nastěhování.',
+  'Трёшка с предчистовой отделкой: до заселения 2–4 месяца ремонта.': 'Třípokojový byt je ve stavu shell & core: před nastěhováním počítejte se 2–4 měsíci dokončovacích prací.',
+  'Не все дома бизнес-класса по классификации BI.': 'Ne všechny budovy spadají podle klasifikace BI do business třídy.',
+  'Есть квартиры на первом или последнем этаже.': 'Některé byty jsou v prvním nebo posledním podlaží.',
+  'В одном из домов потолки ниже 3 м.': 'V jedné z budov je světlá výška nižší než 3 m.',
+  'Сумма за {n} из 3': 'Celkem za {n} ze 3', 'Общая площадь': 'Celková plocha',
+  'Аренда двух двушек в год': 'Roční nájemné ze dvou dvoupokojových bytů', 'по ставке за м² рядом с ЖК на Крыше': 'podle nájemného za m² v okolí projektu na Krisha.kz',
+  'Доходность двушек': 'Hrubý výnos dvoupokojových bytů', 'до ремонта, простоя и налогов': 'před náklady na dokončení, neobsazeností a zdaněním',
+
+  // ───── страница ЖК
+  'ЖК не найден.': 'Projekt nebyl nalezen.', 'В каталог': 'Zpět do katalogu', 'Каталог': 'Katalog', 'сдача {d}': 'dokončení {d}', 'Разделы ЖК': 'Sekce stránky projektu',
+  'Главное': 'Základní údaje', 'Визуалы': 'Vizualizace', 'Особенности': 'Přednosti projektu', 'Архитектура': 'Architektura', 'Двор и холлы': 'Vnitroblok a společné prostory',
+  'Планировки': 'Dispozice', 'Квартиры': 'Byty', 'Аренда': 'Pronájem', 'Стройка': 'Výstavba',
+  'Двушки от': 'Dvoupokojové byty od', 'Трёшки от': 'Třípokojové byty od', 'Свободных квартир': 'Volných bytů', 'в брони ещё {n}': 'dalších {n} v rezervaci',
+  'Аренда двушки рядом': 'Nájemné dvoupokojového bytu v okolí', 'в радиусе 800 м': 'v okruhu 800 m', 'нет объявлений рядом': 'v okolí nejsou žádné inzeráty',
+  'Доходность двушки': 'Hrubý výnos dvoupokojového bytu', 'до расходов и налогов': 'před náklady a zdaněním',
+  'Описания застройщика приведены в оригинале, на русском языке.': 'Popisy od developera uvádíme v původním znění, v ruštině.',
+  'О проекте': 'O projektu', 'Описание на лендинге BI не найдено.': 'Popis na webu BI Group není k dispozici.',
+  'Класс': 'Standard projektu', 'Первая сдача': 'První dokončení', 'Последняя сдача': 'Poslední dokončení', 'Берег': 'Břeh', 'левый': 'levý', 'правый': 'pravý', 'Типы планировок': 'Typy dispozic',
+  'Страница на bi.group': 'Stránka na bi.group', 'Панорама 360°': 'Panorama 360°', 'Буклет': 'Brožura', 'Камера: {n}': 'Kamera: {n}',
+  'Дома и сроки': 'Budovy a termíny', 'Блок': 'Budova', 'Сдача дома': 'Kolaudace', 'Ключи': 'Předání bytu', 'Квартир': 'Bytů', 'Цены': 'Ceny', 'выдают': 'probíhá',
+  'Паркинг: {v} за место, в бюджет не входит.': 'Parkovací stání: {v} za místo, není součástí rozpočtu.',
+  'В каталоге «лучшая цена» ниже прайса до {n}%: это скидка при 100% оплате или акция, на конкретную квартиру уточнять.': 'V katalogu je „nejlepší cena“ až o {n} % nižší než ceníková: jde o slevu při 100% úhradě nebo o akční nabídku, u konkrétního bytu je nutné ji ověřit.',
+  'Ипотека': 'Hypotéka', 'есть рассрочка': 'možnost splátkového kalendáře',
+  'Рендеры и фото с лендинга BI Group. Нажмите, чтобы открыть крупно.': 'Vizualizace a fotografie z webu BI Group. Kliknutím zvětšíte.',
+  'Генплан и окружение': 'Situace a okolí', 'Двор, холлы, квартиры': 'Vnitroblok, společné prostory, byty',
+  'Расстояния по прямой от дома. Объекты из OpenStreetMap': 'Vzdálenosti vzdušnou čarou od budovy. Objekty z OpenStreetMap', 'станции LRT пока по приблизительной схеме': 'stanice LRT zatím podle přibližného schématu',
+  'без названия': 'bez názvu', 'В радиусе 2,5 км в OSM не отмечено.': 'V okruhu 2,5 km není v OSM nic vyznačeno.',
+  'Что отмечает сам застройщик': 'Co uvádí sám developer', 'Что рядом: показать на карте': 'Okolí: zobrazit na mapě',
+  'Планировочные решения': 'Dispoziční řešení', 'Сгруппировано по чертежу. Свободные квартиры, без броней.': 'Seskupeno podle půdorysu. Pouze volné byty, bez rezervovaných.',
+  'Увеличить планировку': 'Zvětšit půdorys', 'Планировка {r}-комнатной квартиры': 'Půdorys bytu {d}', 'Скрыть квартиры': 'Skrýt byty', 'Показать квартиры': 'Zobrazit byty', 'Показать все {n}': 'Zobrazit všech {n}',
+  'Избранное': 'Oblíbené', 'Комн.': 'Dispozice', 'Подбор': 'Výběr', 'Свободных квартир такого типа нет.': 'Žádné volné byty tohoto typu.',
+  'в подбор': 'do výběru', 'в подборе': 've výběru', 'Добавить в подбор тройки': 'Přidat do výběru trojice bytů',
+  'Все свободные квартиры': 'Všechny volné byty',
+  'Объявления Крыши о долгосрочной аренде в радиусе 800 м от дома на дату сбора. Это цены предложения, а не сделок.': 'Inzeráty z Krisha.kz na dlouhodobý pronájem v okruhu 800 m od budovy k datu sběru dat. Jde o nabídkové ceny, nikoli o ceny uzavřených pronájmů.',
+  '{d}, медиана': '{d}, medián', 'доходность {y}': 'výnos {y}', 'объявлений нет': 'žádné inzeráty',
+  'Вторичка рядом': 'Sekundární trh v okolí', 'о продаже': 'na prodej', 'В самом ЖК': 'Přímo v projektu', 'Вторичка в самом ЖК': 'Sekundární trh přímo v projektu',
+  'Объявления, которые Крыша относит к жилым комплексам в 200 м от точки ЖК ({n}). Привязка по координатам, без сверки названий: рядом может оказаться соседний дом другого застройщика.': 'Inzeráty, které Krisha.kz řadí k rezidenčním projektům do 200 m od polohy projektu ({n}). Přiřazení podle souřadnic, bez ověření názvů: může jít i o sousední budovu jiného developera.',
+  'Объявление': 'Inzerát', 'Адрес': 'Adresa', 'В месяц': 'Měsíčně', 'За м²': 'Za m²', 'До дома': 'Vzdálenost', 'Ход строительства': 'Průběh výstavby',
+
+  // ───── карта
+  '{name}: двушки от {a}, трёшки от {b}': '{name}: dvoupokojové byty od {a}, třípokojové od {b}', 'Открыть на Крыше': 'Otevřít na Krisha.kz',
+  'Слои карты': 'Vrstvy mapy', 'Вид': 'Pohled', 'Сверху': 'Shora', 'Объявления Крыши': 'Inzeráty Krisha.kz', 'нет|ads': 'žádné', 'аренда': 'pronájem', 'продажа': 'prodej', '{n}-к': '{n} pok.',
+  'за м² в месяц': 'za m² měsíčně', 'за м²': 'za m²', 'Инфраструктура': 'Občanská vybavenost', '(схема)': '(schéma)',
+  'двушка и трёшка в ваших лимитах': 'dvou- i třípokojový byt ve vašich limitech', 'в лимит проходит не всё': 'do limitu se vejde jen část',
+  'Число на метке: двушки от, {u}. Точка вместо метки: не хватило места, приблизьте карту.': 'Číslo na štítku: dvoupokojové byty od, {u}. Tečka místo štítku: štítek se nevešel, přibližte mapu.',
+  'расстояния от {name}': 'vzdálenosti od {name}', 'оценка локации': 'hodnocení lokality', 'из 100': 'ze 100',
+  'Школы, сады, магазины, медицина': 'Školy, školky, obchody, lékaři', 'Парки и зелень': 'Parky a zeleň', 'Обжитость района': 'Zabydlenost lokality',
+  'Парк': 'Park', 'Школа': 'Škola', 'Детсад': 'Školka', 'Супермаркет': 'Supermarket', 'ТРЦ|1': 'Obchodní centrum', 'Спорт|1': 'Sportoviště', 'Медицина|1': 'Lékař',
+  'пешком': 'pěšky', 'на велосипеде': 'na kole', 'на машине': 'autem',
+  'Парков в 1,5 км': 'Parky do 1,5 km', 'Спорт в 2 км': 'Sportoviště do 2 km', 'Школ в 1 км': 'Školy do 1 km', 'Детсадов в 1 км': 'Školky do 1 km', 'Магазинов в 800 м': 'Obchody do 800 m', 'ТРЦ в 2 км': 'Obchodní centra do 2 km',
+  'Двушка': 'Dvoupokojový byt',
+  'По картам вокруг почти ничего нет: район ещё застраивается. Возможно, часть объектов просто не отмечена в OpenStreetMap.': 'Podle map v okolí téměř nic není: lokalita se teprve zastavuje. Je možné, že část objektů v OpenStreetMap jen chybí.',
+  'Время оценочное: расстояние по прямой с поправкой 1,3 на маршрут, пешком 5 км/ч, велосипед 15 км/ч, машина 25 км/ч плюс 2 минуты. Пробки не учтены. Нажмите на другой ЖК на карте, чтобы увидеть его окружение.': 'Časy jsou orientační: vzdálenost vzdušnou čarou s koeficientem 1,3 na skutečnou trasu, pěšky 5 km/h, na kole 15 km/h, autem 25 km/h plus 2 minuty. Dopravní zácpy nejsou zohledněny. Kliknutím na jiný projekt na mapě zobrazíte jeho okolí.',
+  'Страница ЖК': 'Stránka projektu', 'Обычная карта': 'Běžná mapa',
+
+  // ───── значения из данных с небольшим фиксированным набором (переводятся через td() в Catalog.jsx)
+  // типы планировок
+  'Бабочка': 'oboustranná', 'Расческа': 'jednostranná', 'Пистолет': 'do L', 'Уголок': 'rohová', 'Косой уголок': 'rohová zkosená',
+  // класс жилья
+  'Стандарт': 'Standard', 'Комфорт': 'Komfort', 'Комфорт lite': 'Komfort lite', 'Комфорт Lite': 'Komfort lite', 'Комфорт, Комфорт lite': 'Komfort, Komfort lite', 'Комфорт+': 'Komfort+', 'Комфорт +': 'Komfort+',
+  'Бизнес': 'Business', 'Бизнес+': 'Business+', 'Бизнес +': 'Business+', 'Премиум': 'Premium',
+  // подписи и значения фактов с лендинга BI
+  'Класс жилья': 'Standard projektu', 'класс жилья': 'standard projektu', 'Высота потолков': 'Světlá výška', 'Высота окон': 'Výška oken', 'Высота оконных витражей': 'Výška prosklení',
+  'Срок сдачи': 'Termín dokončení', 'Ближайшая сдача': 'Nejbližší termín dokončení',
+  'Предчистовая': 'shell & core', 'Чистовая': 's povrchovými úpravami', 'Предчистовая, чистовая': 'shell & core, s povrchovými úpravami', 'Предчистовая и чистовая': 'shell & core i s povrchovými úpravami',
+  'Архитектура и дизайн': 'Architektura a design',
+  'Скачать буклет с ремонтом': 'Brožura bytů na klíč', 'Буклет квартиры с ремонтом': 'Brožura bytů na klíč', 'Квартиры с ремонтом': 'Byty na klíč', 'VR-тур': 'VR prohlídka', 'Подробнее': 'Více informací',
+  // банки
+  'Халык банк': 'Halyk Bank', 'Отбасы банк': 'Otbasy Bank', 'Банк ЦентрКредит': 'Bank CenterCredit', 'МФО BI Finance': 'BI Finance',
+  // месяцы в подписях хода строительства
+  'Январь': 'Leden', 'Февраль': 'Únor', 'Март': 'Březen', 'Апрель': 'Duben', 'Май': 'Květen', 'Июнь': 'Červen', 'Июль': 'Červenec', 'Август': 'Srpen', 'Сентябрь': 'Září', 'Октябрь': 'Říjen', 'Ноябрь': 'Listopad', 'Декабрь': 'Prosinec',
+  // особенности дома из scenarios.js (traitsOf)
+  'панорамные окна': 'panoramatická okna', 'закрытый двор': 'uzavřený vnitroblok', 'террасы': 'terasy', 'спортзоны': 'sportovní zóny', 'умный дом': 'chytrá domácnost', 'консьерж': 'concierge', 'кирпичный фасад': 'cihlová fasáda',
+}
